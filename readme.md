@@ -2,8 +2,8 @@
 
 Module that add popup dialog box to your application
 
-## Dependencies ##
+## Project dependencies ##
 
-angular <br>
-angular-sanitize <br>
-bootstrap
+angular (required)<br>
+angular-sanitize (required)<br>
+bootstrap (optional)

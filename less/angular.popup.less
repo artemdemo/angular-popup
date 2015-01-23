@@ -1,0 +1,42 @@
+//
+// Basic configuration
+//
+@popup-width: 250px;
+@popup-bg-color: #fff;
+@basic-z-index: 1500;
+
+
+.popup-backdrop {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: @basic-z-index;
+}
+.popup-container {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: @basic-z-index + 1;
+}
+.popup-container {
+  .popup {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    background-color: @popup-bg-color;
+    color: black;
+    width: @popup-width;
+    margin-left: -1 * @popup-width / 2;
+    max-height: 50%;
+    border-radius: 0;
+  }
+  .popup .popup-title {
+    text-align: center;
+    padding: 13px 5px 10px 5px;
+  }
+}

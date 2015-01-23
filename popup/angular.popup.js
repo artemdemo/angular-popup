@@ -5,7 +5,7 @@
  * @git https://github.com/artemdemo/angular-popup
  */
 
-angular.module( 'artemdemo.Popup', [])
+angular.module( 'artemdemo.popup', [])
 
 .factory('$popup',[
     '$rootScope', '$compile', '$q', '$sce',
@@ -33,41 +33,40 @@ angular.module( 'artemdemo.Popup', [])
          */
         var popupStatus = 'closed';
 
-
         var templates = {};
 
         templates.confirm = [
-            '<div class="art-backdrop visible backdrop-popup active"></div>',
-            '<div class="popup-container popup-showing active">',
-            '<div class="popup">',
-            '<div class="popup-head">',
-            '<h3 class="popup-title ng-binding" ng-bind-html="TITLE"></h3>',
-            '</div>',
-            '<div class="popup-body">',
-            '<span ng-bind-html="BODY_TXT"></span>',
-            '</div>',
-            '<div class="popup-buttons">',
-            '<button ng-click="okAction()" class="button" ng-class="okType || \'button-default\'">{{ OK_TXT }}</button>',
-            '<button ng-click="cancelAction()" class="button" ng-class="cancelType || \'button-default\'">{{ CANCEL_TXT }}</button>',
-            '</div>',
-            '</div>',
+            '<div class="popup-backdrop" ng-click="backdropClick()"></div>',
+            '<div class="popup-container popup-type-confirm">',
+                '<div class="popup">',
+                    '<div class="popup-head">',
+                        '<h3 class="popup-title ng-binding" ng-bind-html="TITLE"></h3>',
+                    '</div>',
+                    '<div class="popup-body">',
+                        '<span ng-bind-html="BODY_TXT"></span>',
+                    '</div>',
+                    '<div class="popup-buttons">',
+                        '<button ng-click="okAction()" class="btn btn-ok" ng-class="okType || \'btn-default\'">{{ OK_TXT }}</button>',
+                        '<button ng-click="cancelAction()" class="btn btn-cancel" ng-class="cancelType || \'btn-default\'">{{ CANCEL_TXT }}</button>',
+                    '</div>',
+                '</div>',
             '</div>'
         ].join('');
 
         templates.show = [
-            '<div class="art-backdrop visible backdrop-popup active"></div>',
-            '<div class="popup-container popup-showing active">',
-            '<div class="popup">',
-            '<div class="popup-head">',
-            '<h3 class="popup-title ng-binding" ng-bind-html="TITLE"></h3>',
-            '</div>',
-            '<div class="popup-body">',
-            '<span ng-bind-html="BODY_TXT"></span>',
-            '</div>',
-            '<div class="popup-buttons">',
-            '<button ng-click="okAction($event)" class="button ng-binding app-bg-color no-border" ng-class="okType || \'button-default\'">{{ OK_TXT }}</button>',
-            '</div>',
-            '</div>',
+            '<div class="popup-backdrop" ng-click="backdropClick()"></div>',
+            '<div class="popup-container popup-type-show">',
+                '<div class="popup">',
+                    '<div class="popup-head">',
+                        '<h3 class="popup-title ng-binding" ng-bind-html="TITLE"></h3>',
+                    '</div>',
+                    '<div class="popup-body">',
+                        '<span ng-bind-html="BODY_TXT"></span>',
+                    '</div>',
+                    '<div class="popup-buttons">',
+                        '<button ng-click="okAction($event)" class="btn btn-ok" ng-class="okType || \'btn-default\'">{{ OK_TXT }}</button>',
+                    '</div>',
+                '</div>',
             '</div>'
         ].join('');
 
@@ -112,7 +111,7 @@ angular.module( 'artemdemo.Popup', [])
 
             popupScope.cancelAction = function() {
                 deferred.reject();
-                artPopup.hide();
+                $popup.hide();
             };
 
             popupScope.okAction = function(e) {
@@ -168,10 +167,17 @@ angular.module( 'artemdemo.Popup', [])
 
             popupScope.okAction = function() {
                 deferred.resolve();
-                artPopup.hide();
+                $popup.hide();
             };
 
             return deferred.promise;
+        };
+
+        /*
+         * Proceed click on backdrop
+         */
+        $popup.backdropClick = function() {
+
         };
 
         /*
