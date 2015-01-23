@@ -41,6 +41,7 @@ popup {
   padding: 0 8px 7px 8px;
   background-color: #ffffff;
   margin-left: -125px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }
 .popup-container .popup-body {
   margin-bottom: 10px;
