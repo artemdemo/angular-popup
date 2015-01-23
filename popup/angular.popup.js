@@ -55,19 +55,19 @@ angular.module( 'artemdemo.popup', [])
         // General template with main popup construction
         templates.popup = [
             '<popup>',
-            '<form>',
-            '<div class="popup-container" ng-class="POPUP_TYPE">',
-                '<div class="popup">',
-                    '<div class="popup-head">',
-                        '<h3 class="popup-title ng-binding" ng-bind-html="TITLE"></h3>',
+                '<form>',
+                '<div class="popup-container" ng-class="POPUP_TYPE">',
+                    '<div class="popup">',
+                        '<div class="popup-head">',
+                            '<h3 class="popup-title ng-binding" ng-bind-html="TITLE"></h3>',
+                        '</div>',
+                        '<div class="popup-body">',
+                            '<span ng-bind-html="BODY_TXT"></span>',
+                        '</div>',
+                        '<div class="popup-buttons"></div>',
                     '</div>',
-                    '<div class="popup-body">',
-                        '<span ng-bind-html="BODY_TXT"></span>',
-                    '</div>',
-                    '<div class="popup-buttons"></div>',
                 '</div>',
-            '</div>',
-            '</form>',
+                '</form>',
             '</popup>'
         ].join('');
 

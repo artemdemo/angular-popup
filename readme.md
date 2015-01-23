@@ -12,3 +12,7 @@ angular (required)<br>
 angular-sanitize (required)<br>
 bootstrap (optional) <br>
 less (optional)
+
+## ToDo ##
+
+Add animation for popup
