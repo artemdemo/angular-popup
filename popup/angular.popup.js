@@ -37,6 +37,8 @@ angular.module( 'artemdemo.popup', [])
          */
         var popupStatus = 'closed';
 
+        var deferred = null;
+
         /*
          * Templates for popups
          */
@@ -49,7 +51,7 @@ angular.module( 'artemdemo.popup', [])
         // General template with main popup construction
         templates.popup = [
             '<popup>',
-            '<div class="popup-container" ng-class="POPUP_TYPE">',
+            '<div class="popup-container" ng-keyup="keyPress($event)" ng-class="POPUP_TYPE">',
                 '<div class="popup">',
                     '<div class="popup-head">',
                         '<h3 class="popup-title ng-binding" ng-bind-html="TITLE"></h3>',
@@ -96,7 +98,7 @@ angular.module( 'artemdemo.popup', [])
          */
         $popup.confirm = function( params ) {
             var element;
-            var deferred = $q.defer();
+            deferred = $q.defer();
 
             if ( popupStatus == 'open' ) return false;
             popupStatus = 'open';
@@ -150,7 +152,7 @@ angular.module( 'artemdemo.popup', [])
          */
         $popup.show = function( params ) {
             var element;
-            var deferred = $q.defer();
+            deferred = $q.defer();
 
             if ( popupStatus == 'open' ) return false;
             popupStatus = 'open';
@@ -190,6 +192,8 @@ angular.module( 'artemdemo.popup', [])
             for ( var i=0; i < popupEl.length; i++ ) {
                 popupEl.remove();
             }
+
+            angular.element(document.getElementsByTagName('body')[0]).unbind('keyup');
         };
 
         /*
@@ -216,6 +220,18 @@ angular.module( 'artemdemo.popup', [])
             element = linkFn(popupScope);
 
             popupScope.POPUP_TYPE = 'popup-type-' + tmpl;
+
+            /*
+             * Bind keypress functionality
+             */
+            angular.element(document.getElementsByTagName('body')[0])
+                // if ESC - close popup
+                .bind('keyup', function(e){
+                    if (e.keyCode == 27 ) {
+                        deferred.resolve();
+                        $popup.hide();
+                    }
+                });
 
             return element;
         }

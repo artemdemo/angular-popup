@@ -38,10 +38,14 @@ popup {
   border-radius: 0;
   position: absolute;
   width: 250px;
+  padding: 0 8px 7px 8px;
   background-color: #ffffff;
   margin-left: -125px;
 }
-.popup-container .popup .popup-title {
+.popup-container .popup-body {
+  margin-bottom: 10px;
+}
+.popup-container .popup-title {
   margin: 0;
   text-align: center;
   padding: 13px 5px 10px 5px;
