@@ -33,8 +33,12 @@ angular.module( 'artemdemo.popup', [])
          */
         var popupStatus = 'closed';
 
+        /*
+         * Templates for popups
+         */
         var templates = {};
 
+        // General template with main popup construction
         templates.general = [
             '<div class="popup-backdrop"></div>',
             '<div class="popup-container">',
@@ -50,13 +54,16 @@ angular.module( 'artemdemo.popup', [])
             '</div>'
         ].join('');
 
+        // template object with buttons
         templates.buttons = {};
 
+        // buttons of confirmation popup
         templates.buttons.confirm = [
             '<button ng-click="okAction()" class="btn btn-ok" ng-class="okType || \'btn-default\'">{{ OK_TXT }}</button>',
             '<button ng-click="cancelAction()" class="btn btn-cancel" ng-class="cancelType || \'btn-default\'">{{ CANCEL_TXT }}</button>',
         ].join('');
 
+        // buttons of alert popup
         templates.buttons.show = [
             '<button ng-click="okAction($event)" class="btn btn-ok" ng-class="okType || \'btn-default\'">{{ OK_TXT }}</button>',
         ].join('');
@@ -187,6 +194,7 @@ angular.module( 'artemdemo.popup', [])
 
             popupEl = angular.element( templates.general );
             buttons = angular.element( templates.buttons[tmpl] );
+
             for ( var i=0; i<buttons.length; i++ ) {
                 popupEl[1].getElementsByClassName('popup-buttons')[0].appendChild(buttons[i]);
             }

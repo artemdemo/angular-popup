@@ -8,7 +8,7 @@ function(
     $popup){
 
     $scope.firstExample = function() {
-        $popup.confirm({
+        $popup.show({
            title: 'Alert',
            template: 'Example #1',
            okText: 'OK button text'
