@@ -31,7 +31,7 @@ function(
             template: '<input type="text" id="enterData" />',
             okText: 'OK',
             cancelText: 'Cancel',
-            okTap: function() {
+            okTap: function(e) {
                 return document.getElementById('enterData').value;
             }
         }).then(function( value ){

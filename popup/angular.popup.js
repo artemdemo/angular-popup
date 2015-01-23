@@ -78,10 +78,10 @@ angular.module( 'artemdemo.popup', [])
         templates.buttons.confirm = [
             '<div class="row">',
                 '<div class="col-xs-6">',
-                    '<button ng-click="okAction()" class="btn btn-ok" ng-class="okType || \'btn-block btn-primary\'">{{ OK_TXT }}</button>',
+                    '<button ng-click="okAction($event)" class="btn btn-ok" ng-class="okType || \'btn-block btn-primary\'">{{ OK_TXT }}</button>',
                 '</div>',
                 '<div class="col-xs-6">',
-                    '<div ng-click="cancelAction()" class="btn btn-cancel" ng-class="cancelType || \'btn-block btn-default\'">{{ CANCEL_TXT }}</div>',
+                    '<div ng-click="cancelAction($event)" class="btn btn-cancel" ng-class="cancelType || \'btn-block btn-default\'">{{ CANCEL_TXT }}</div>',
                 '</div>',
             '</div>'
         ].join('');
@@ -101,8 +101,7 @@ angular.module( 'artemdemo.popup', [])
                 title: 'Alert',
                 template: 'Alert body text',
                 okText: 'OK button text',
-                okType: 'OK button additional classes',
-                onTap: function()
+                okType: 'OK button additional classes'
          *  }
          *
          *  @return Promise
@@ -191,10 +190,17 @@ angular.module( 'artemdemo.popup', [])
                 else popupEl.find('button')[0].focus();
             });
 
-            popupScope.okAction = function(e) {
+            /*
+             * Result of 'okTap' function can prevent popup from closing.
+             * If result is FALSE - popup wouldn't close
+             * (obviously user can close it by clicking on 'cancel' or using ESC button)
+             *
+             * @param event - mouse event that will be send to the custom function
+             */
+            popupScope.okAction = function(event) {
                 var result = false;
                 if ( params.hasOwnProperty('okTap') && angular.isFunction( params.okTap ) ) {
-                    result = params.okTap(e);
+                    result = params.okTap(event);
                 } else {
                     // If there are no 'okTap' function we can close popup
                     result = true;
