@@ -13,6 +13,15 @@ function(
            template: 'Example #1',
            okText: 'OK button text'
         });
-    }
+    };
 
-    }]);
+    $scope.secondExample = function(){
+        $popup.confirm({
+            title: 'Confirm',
+            template: 'Example #2',
+            okText: 'OK button text',
+            cancelText: 'Cancel button text'
+        });
+    };
+
+}]);

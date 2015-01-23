@@ -1,6 +1,10 @@
 /**
  * Popup module for angular applications
  *
+ * This module has some cool UX functionality:
+ * - it will set focus on OK in simple alert popup
+ * - it will focus on input if you have one in the popup (will work in confirmation popup only)
+ *
  * @auth Artem Demo
  * @git https://github.com/artemdemo/angular-popup
  */
@@ -38,10 +42,14 @@ angular.module( 'artemdemo.popup', [])
          */
         var templates = {};
 
+        templates.backdrop = [
+            '<div class="popup-backdrop"></div>'
+        ].join('');
+
         // General template with main popup construction
-        templates.general = [
-            '<div class="popup-backdrop"></div>',
-            '<div class="popup-container">',
+        templates.popup = [
+            '<popup>',
+            '<div class="popup-container" ng-class="POPUP_TYPE">',
                 '<div class="popup">',
                     '<div class="popup-head">',
                         '<h3 class="popup-title ng-binding" ng-bind-html="TITLE"></h3>',
@@ -51,21 +59,22 @@ angular.module( 'artemdemo.popup', [])
                     '</div>',
                     '<div class="popup-buttons"></div>',
                 '</div>',
-            '</div>'
+            '</div>',
+            '</popup>'
         ].join('');
 
         // template object with buttons
         templates.buttons = {};
 
-        // buttons of confirmation popup
+        // buttons for confirmation popup
         templates.buttons.confirm = [
             '<button ng-click="okAction()" class="btn btn-ok" ng-class="okType || \'btn-default\'">{{ OK_TXT }}</button>',
-            '<button ng-click="cancelAction()" class="btn btn-cancel" ng-class="cancelType || \'btn-default\'">{{ CANCEL_TXT }}</button>',
+            '<button ng-click="cancelAction()" class="btn btn-cancel" ng-class="cancelType || \'btn-default\'">{{ CANCEL_TXT }}</button>'
         ].join('');
 
-        // buttons of alert popup
+        // buttons for simple alert popup
         templates.buttons.show = [
-            '<button ng-click="okAction($event)" class="btn btn-ok" ng-class="okType || \'btn-default\'">{{ OK_TXT }}</button>',
+            '<button ng-click="okAction($event)" class="btn btn-ok" ng-class="okType || \'btn-default\'">{{ OK_TXT }}</button>'
         ].join('');
 
         /*
@@ -83,7 +92,7 @@ angular.module( 'artemdemo.popup', [])
                 okTap: function()
          *  }
          * @return Promise
-         *      Promise will be return result of given onTap function
+         *      Promise will return result of given onTap function
          */
         $popup.confirm = function( params ) {
             var element;
@@ -190,18 +199,23 @@ angular.module( 'artemdemo.popup', [])
          * @return DOM element of popup
          */
         function compilePopup( tmpl ) {
-            var linkFn, element, buttons;
+            var linkFn, element;
+            var backdrop, buttons;
 
-            popupEl = angular.element( templates.general );
+            popupEl = angular.element( templates.popup );
+            backdrop = angular.element( templates.backdrop );
             buttons = angular.element( templates.buttons[tmpl] );
 
+            popupEl.append( backdrop );
             for ( var i=0; i<buttons.length; i++ ) {
-                popupEl[1].getElementsByClassName('popup-buttons')[0].appendChild(buttons[i]);
+                popupEl[0].getElementsByClassName('popup-buttons')[0].appendChild(buttons[i]);
             }
 
             linkFn = $compile(popupEl);
             popupScope = $rootScope.$new();
             element = linkFn(popupScope);
+
+            popupScope.POPUP_TYPE = 'popup-type-' + tmpl;
 
             return element;
         }
