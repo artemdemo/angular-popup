@@ -1,4 +1,4 @@
-var app = angular.module('app', ['artemdemo.popup']);
+var app = angular.module('app', ['artemdemo.popup', 'ngSanitize']);
 
 app.controller('mainCtrl',[
     '$scope',
@@ -8,7 +8,11 @@ function(
     $popup){
 
     $scope.firstExample = function() {
-        $popup.show();
+        $popup.confirm({
+           title: 'Alert',
+           template: 'Example #1',
+           okText: 'OK button text'
+        });
     }
 
     }]);

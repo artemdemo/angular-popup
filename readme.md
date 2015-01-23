@@ -6,4 +6,5 @@ Module that add popup dialog box to your application
 
 angular (required)<br>
 angular-sanitize (required)<br>
-bootstrap (optional)
+bootstrap (optional) <br>
+less (optional)

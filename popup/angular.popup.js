@@ -35,9 +35,9 @@ angular.module( 'artemdemo.popup', [])
 
         var templates = {};
 
-        templates.confirm = [
-            '<div class="popup-backdrop" ng-click="backdropClick()"></div>',
-            '<div class="popup-container popup-type-confirm">',
+        templates.general = [
+            '<div class="popup-backdrop"></div>',
+            '<div class="popup-container">',
                 '<div class="popup">',
                     '<div class="popup-head">',
                         '<h3 class="popup-title ng-binding" ng-bind-html="TITLE"></h3>',
@@ -45,29 +45,20 @@ angular.module( 'artemdemo.popup', [])
                     '<div class="popup-body">',
                         '<span ng-bind-html="BODY_TXT"></span>',
                     '</div>',
-                    '<div class="popup-buttons">',
-                        '<button ng-click="okAction()" class="btn btn-ok" ng-class="okType || \'btn-default\'">{{ OK_TXT }}</button>',
-                        '<button ng-click="cancelAction()" class="btn btn-cancel" ng-class="cancelType || \'btn-default\'">{{ CANCEL_TXT }}</button>',
-                    '</div>',
+                    '<div class="popup-buttons"></div>',
                 '</div>',
             '</div>'
         ].join('');
 
-        templates.show = [
-            '<div class="popup-backdrop" ng-click="backdropClick()"></div>',
-            '<div class="popup-container popup-type-show">',
-                '<div class="popup">',
-                    '<div class="popup-head">',
-                        '<h3 class="popup-title ng-binding" ng-bind-html="TITLE"></h3>',
-                    '</div>',
-                    '<div class="popup-body">',
-                        '<span ng-bind-html="BODY_TXT"></span>',
-                    '</div>',
-                    '<div class="popup-buttons">',
-                        '<button ng-click="okAction($event)" class="btn btn-ok" ng-class="okType || \'btn-default\'">{{ OK_TXT }}</button>',
-                    '</div>',
-                '</div>',
-            '</div>'
+        templates.buttons = {};
+
+        templates.buttons.confirm = [
+            '<button ng-click="okAction()" class="btn btn-ok" ng-class="okType || \'btn-default\'">{{ OK_TXT }}</button>',
+            '<button ng-click="cancelAction()" class="btn btn-cancel" ng-class="cancelType || \'btn-default\'">{{ CANCEL_TXT }}</button>',
+        ].join('');
+
+        templates.buttons.show = [
+            '<button ng-click="okAction($event)" class="btn btn-ok" ng-class="okType || \'btn-default\'">{{ OK_TXT }}</button>',
         ].join('');
 
         /*
@@ -76,7 +67,7 @@ angular.module( 'artemdemo.popup', [])
          *
          * @param params (object) - parameters of new popup
          *  {
-         *      title: 'Alert',
+                title: 'Alert',
                 template: 'Alert body text',
                 cancelText: 'Cancel button text',
                 cancelType: 'Cancel button additional classes',
@@ -85,9 +76,10 @@ angular.module( 'artemdemo.popup', [])
                 okTap: function()
          *  }
          * @return Promise
+         *      Promise will be return result of given onTap function
          */
         $popup.confirm = function( params ) {
-            var linkFn, element;
+            var element;
             var deferred = $q.defer();
 
             if ( popupStatus == 'open' ) return false;
@@ -95,15 +87,12 @@ angular.module( 'artemdemo.popup', [])
 
             params = angular.isObject(params) ? params : {};
 
-            popupEl = angular.element( templates.confirm );
-            linkFn = $compile(popupEl);
-            popupScope = $rootScope.$new();
-            element = linkFn(popupScope);
+            element = compilePopup('confirm');
 
             popupScope.TITLE = params.hasOwnProperty('title') ? params.title : '';
             popupScope.BODY_TXT = params.hasOwnProperty('template') ? $sce.trustAsHtml( params.template ) : '';
-            popupScope.CANCEL_TXT = params.hasOwnProperty('cancelText') ? params.cancelText : '';
-            popupScope.OK_TXT = params.hasOwnProperty('okText') ? params.okText : '';
+            popupScope.CANCEL_TXT = params.hasOwnProperty('cancelText') ? params.cancelText : 'Cancel';
+            popupScope.OK_TXT = params.hasOwnProperty('okText') ? params.okText : 'Ok';
 
             for ( var i=0; i < element.length; i++ ) {
                 document.body.appendChild( element[i] );
@@ -123,7 +112,7 @@ angular.module( 'artemdemo.popup', [])
                     result = true;
                 }
                 deferred.resolve( result );
-                if ( !! result ) artPopup.hide();
+                if ( !! result ) $popup.hide();
             };
 
             return deferred.promise;
@@ -144,7 +133,7 @@ angular.module( 'artemdemo.popup', [])
          *  @return Promise
          */
         $popup.show = function( params ) {
-            var linkFn, element;
+            var element;
             var deferred = $q.defer();
 
             if ( popupStatus == 'open' ) return false;
@@ -152,18 +141,18 @@ angular.module( 'artemdemo.popup', [])
 
             params = angular.isObject(params) ? params : {};
 
-            popupEl = angular.element( templates.show );
-            linkFn = $compile(popupEl);
-            popupScope = $rootScope.$new();
-            element = linkFn(popupScope);
+            element = compilePopup('show');
 
             popupScope.TITLE = params.hasOwnProperty('title') ? params.title : '';
             popupScope.BODY_TXT = params.hasOwnProperty('template') ? $sce.trustAsHtml( params.template ) : '';
-            popupScope.OK_TXT = params.hasOwnProperty('okText') ? params.okText : '';
+            popupScope.OK_TXT = params.hasOwnProperty('okText') ? params.okText : 'Ok';
 
             for ( var i=0; i < element.length; i++ ) {
                 document.body.appendChild( element[i] );
             }
+
+            // Setting focus to button in order to let user to close popup in one click
+            popupEl.find('button')[0].focus();
 
             popupScope.okAction = function() {
                 deferred.resolve();
@@ -173,12 +162,6 @@ angular.module( 'artemdemo.popup', [])
             return deferred.promise;
         };
 
-        /*
-         * Proceed click on backdrop
-         */
-        $popup.backdropClick = function() {
-
-        };
 
         /*
          * Hide popup.
@@ -192,6 +175,28 @@ angular.module( 'artemdemo.popup', [])
                 popupEl.remove();
             }
         };
+
+        /*
+         * Function is compiling element into the DOM
+         *
+         * @param tmpl - template name
+         * @return DOM element of popup
+         */
+        function compilePopup( tmpl ) {
+            var linkFn, element, buttons;
+
+            popupEl = angular.element( templates.general );
+            buttons = angular.element( templates.buttons[tmpl] );
+            for ( var i=0; i<buttons.length; i++ ) {
+                popupEl[1].getElementsByClassName('popup-buttons')[0].appendChild(buttons[i]);
+            }
+
+            linkFn = $compile(popupEl);
+            popupScope = $rootScope.$new();
+            element = linkFn(popupScope);
+
+            return element;
+        }
 
         return $popup;
     }]);

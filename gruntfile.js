@@ -13,7 +13,32 @@ module.exports = function(grunt) {
                 }
             }
         },
+        jshint: {
+            all: ['popup/angular.popup.js'],
+            options: {
+                globals: {
+                    _: false,
+                    $: false,
+                    jasmine: false,
+                    describe: false,
+                    it: false,
+                    expect: false,
+                    beforeEach: false
+                },
+                browser: true,
+                devel: true
+            }
+        },
         uglify: {
+            options: {
+                banner: '/**!\n' +
+                        ' * <%= pkg.name %> \n' +
+                        ' * version: <%= pkg.version %>\n' +
+                        ' * date: <%= grunt.template.today("yyyy-mm-dd") %>\n' +
+                        ' * url: <%= pkg.repository.url %>\n' +
+                        ' * \n' +
+                        ' */\n'
+            },
             my_target: {
                 files: {
                     'popup/angular.popup.min.js': ['popup/angular.popup.js']
@@ -29,6 +54,13 @@ module.exports = function(grunt) {
                 options: {
                     nospawn: true
                 }
+            },
+            scripts: {
+                files: ['popup/*.js'],
+                tasks: ['jshint'],
+                options: {
+                    spawn: false
+                }
             }
         }
     });
@@ -36,11 +68,12 @@ module.exports = function(grunt) {
     //Loading less plugin
     grunt.loadNpmTasks('grunt-contrib-less');
     //Loading watcher
-    grunt.loadNpmTasks('grunt-contrib-watch')
+    grunt.loadNpmTasks('grunt-contrib-watch');
     //Loading uglify plugin
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    //Loading jshint plugin
+    grunt.loadNpmTasks('grunt-contrib-jshint');
 
-
-    // Default task(s).
-    grunt.registerTask('default', ['less', 'uglify', 'watch']);
+    // Default tasks
+    grunt.registerTask('default', ['less', 'uglify', 'jshint', 'watch']);
 };
