@@ -1,0 +1,24 @@
+.art-backdrop {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1500;
+}
+.loading-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    color: white;
+    width: 90px;
+    height: 90px;
+    margin-top: -45px;
+    margin-left: -45px;
+    padding: 8px;
+    background-color: rgba(0, 0, 0, 0.65);
+    border-radius: 10px;
+    z-index: 1501;
+}
+.loading-container .loading { text-align: center; }
