@@ -13,6 +13,58 @@ angular-sanitize (required)<br>
 bootstrap (optional) <br>
 less (optional)
 
+## Examples ##
+
+Add to your project
+
+```
+var app = angular.module('app', ['artemdemo.popup']);
+```
+
+Simple popup
+
+```
+$popup.show({
+            title: 'Alert',
+            template: 'Example #1',
+            okText: 'OK button text',
+            okType: ''
+        });
+```
+
+Confirmation popup
+
+```
+$popup.confirm({
+            title: 'Confirm',
+            template: 'Example #2',
+            okText: 'OK',
+            cancelText: 'Cancel'
+        });
+```
+
+Confirmation popup with input
+
+```
+$popup.confirm({
+            title: 'Confirm',
+            template: '<input type="text" id="enterData" />',
+            okText: 'OK',
+            cancelText: 'Cancel',
+            okTap: function(e) {
+                return document.getElementById('enterData').value;
+            }
+        }).then(function( value ){
+            $timeout(function(){
+                $popup.show({
+                    title: 'Alert',
+                    template: value,
+                    okText: 'OK',
+                    okType: ''
+                });
+            }, 200);
+        });```
+
 ## ToDo ##
 
 Add animation for popup
