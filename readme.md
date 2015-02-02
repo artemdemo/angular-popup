@@ -17,13 +17,13 @@ less (optional)
 
 Add to your project
 
-```
+```javascript
 var app = angular.module('app', ['artemdemo.popup']);
 ```
 
 Simple popup
 
-```
+```javascript
 $popup.show({
             title: 'Alert',
             template: 'Example #1',
@@ -34,7 +34,7 @@ $popup.show({
 
 Confirmation popup
 
-```
+```javascript
 $popup.confirm({
             title: 'Confirm',
             template: 'Example #2',
@@ -45,7 +45,7 @@ $popup.confirm({
 
 Confirmation popup with input
 
-```
+```javascript
 $popup.confirm({
             title: 'Confirm',
             template: '<input type="text" id="enterData" />',
