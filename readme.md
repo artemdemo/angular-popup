@@ -21,6 +21,14 @@ Add to your project
 var app = angular.module('app', ['artemdemo.popup']);
 ```
 
+Added reference to your controller
+
+```javascript
+app.controller('mainCtrl', ['$popup', function($popup){
+    // Your code here
+}]);
+```
+
 Simple popup
 
 ```javascript
