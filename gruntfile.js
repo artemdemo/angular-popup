@@ -62,6 +62,14 @@ module.exports = function(grunt) {
                     spawn: false
                 }
             }
+        },
+        jsdoc : {
+            dist : {
+                src: ['popup/angular.popup.js'],
+                options: {
+                    destination: 'doc'
+                }
+            }
         }
     });
 
@@ -74,6 +82,9 @@ module.exports = function(grunt) {
     //Loading jshint plugin
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
+    grunt.loadNpmTasks('grunt-jsdoc');
+
     // Default tasks
     grunt.registerTask('default', ['less', 'uglify', 'jshint', 'watch']);
+    grunt.registerTask('doc', ['jsdoc']);
 };
