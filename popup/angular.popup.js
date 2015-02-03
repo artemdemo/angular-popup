@@ -1,7 +1,12 @@
-/**
+/*
  * @author Artem Demo
  * @git https://github.com/artemdemo/angular-popup
  */
+
+/**
+ * @namespace Directives
+ */
+
 (function(){
 
     var module = angular.module( 'artemdemo.popup', []);
@@ -13,12 +18,17 @@
      * - it will set focus on OK in simple alert popup
      * - it will focus on input if you have one in the popup (will work in confirmation popup only)
      *
-     * @namespace $popup
+     * @class $popup
+     * @param $rootScope
+     * @param $compile
+     * @param $q
+     * @param $timeout
+     * @param $sce
      */
     var $popup = function( $rootScope, $compile, $q, $timeout, $sce ){
         /**
          * Popup factory object
-         * @memberof $popup
+         *
          * @private
          * @type {Object}
          */
@@ -26,13 +36,16 @@
 
         /**
          * Scope that will contain scope of the created popup
+         *
          * @memberof $popup
          * @private
+         * @type {Object}
          */
         var popupScope;
 
         /**
          * Popup DOM object
+         *
          * @memberof $popup
          * @private
          * @type {Object}
@@ -60,7 +73,6 @@
         /**
          * Templates for popups
          *
-         * @namespace $popup.templates
          * @memberof $popup
          * @type {Object}
          * @private
@@ -70,7 +82,7 @@
         /**
          * Template for backdrop
          *
-         * @memberof $popup.templates
+         * @memberof $popup
          * @type {string}
          */
         templates.backdrop = [
@@ -80,8 +92,24 @@
         /**
          * General template with main popup construction
          *
-         * @memberof $popup.templates
+         * @memberof $popup
          * @type {string}
+         * @example
+         * &lt;popup&gt;
+         * &lt;form&gt;
+         * &lt;div class=&quot;popup-container&quot; ng-class=&quot;CUSTOM_CLASS&quot;&gt;
+         * &lt;div class=&quot;popup&quot;&gt;
+         * &lt;div class=&quot;popup-head&quot;&gt;
+         * &lt;h3 class=&quot;popup-title ng-binding&quot; ng-bind-html=&quot;TITLE&quot;&gt;&lt;/h3&gt;
+         * &lt;/div&gt;
+         * &lt;div class=&quot;popup-body&quot;&gt;
+         * &lt;span ng-bind-html=&quot;BODY_TXT&quot;&gt;&lt;/span&gt;
+         * &lt;/div&gt;
+         * &lt;div class=&quot;popup-buttons&quot;&gt;&lt;/div&gt;
+         * &lt;/div&gt;
+         * &lt;/div&gt;
+         * &lt;/form&gt;
+         * &lt;/popup&gt;
          */
         templates.popup = [
             '<popup>',
@@ -104,7 +132,7 @@
         /**
          * Template object for buttons
          *
-         * @memberof $popup.templates
+         * @memberof $popup
          * @type {Object}
          */
         templates.buttons = {};
@@ -112,7 +140,7 @@
         /**
          * Buttons for confirmation popup
          *
-         * @memberof $popup.templates
+         * @memberof $popup
          * @type {String}
          */
         templates.buttons.confirm = [
@@ -129,8 +157,8 @@
         /**
          * Buttons for simple alert popup
          *
-         * @memberof $popup.templates
-         * @type {Object}
+         * @memberof $popup
+         * @type {String}
          */
         templates.buttons.show = [
             '<button ng-click="okAction($event)" class="btn btn-ok" ng-class="okType || \'btn-block btn-primary\'">{{ OK_TXT }}</button>'
@@ -145,10 +173,10 @@
          * @param {Object} params - parameters of new popup
          * @example
          *  {
-                    title: 'Alert',
-                    template: 'Alert body text',
-                    okText: 'OK button text',
-                    okType: 'OK button additional classes'
+            title: 'Alert',
+            template: 'Alert body text',
+            okText: 'OK button text',
+            okType: 'OK button additional classes'
          *  }
          *
          *  @return {Promise}
@@ -195,13 +223,13 @@
          * @param {Object} params - parameters of new popup
          * @example
          *  {
-                     title: 'Alert',
-                     template: 'Alert body text',
-                     cancelText: 'Cancel button text',
-                     cancelType: 'Cancel button additional classes',
-                     okText: 'OK button text',
-                     okType: 'OK button additional classes',
-                     okTap: function()
+            title: 'Alert',
+            template: 'Alert body text',
+            cancelText: 'Cancel button text',
+            cancelType: 'Cancel button additional classes',
+            okText: 'OK button text',
+            okType: 'OK button additional classes',
+            okTap: function()
          *  }
          * @return {Promise} - Promise will return result of given onTap function
          */
@@ -245,7 +273,6 @@
              * If result is FALSE - popup wouldn't close
              * (obviously user can close it by clicking on 'cancel' or using ESC button)
              *
-             *
              * @param {Object} event - mouse event that will be send to the custom function
              *
              * @return {Promise}
@@ -271,8 +298,8 @@
          * Hide popup.
          * Will destroy scope of the element and remove tags from the DOM
          *
-         * @function confirm
          * @memberof $popup
+         * @function hide
          * @public
          */
         $popup.hide = function() {
