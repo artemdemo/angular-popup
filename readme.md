@@ -40,6 +40,8 @@ $popup.show({
         });
 ```
 
+![alt tag](https://raw.githubusercontent.com/artemdemo/angular-popup/master/img/Angular-Popup-module-Simple-Demo.jpg)
+
 Confirmation popup
 
 ```javascript
@@ -50,6 +52,8 @@ $popup.confirm({
             cancelText: 'Cancel'
         });
 ```
+
+![alt tag](https://raw.githubusercontent.com/artemdemo/angular-popup/master/img/Angular-Popup-module-Confirm-Dialog.jpg)
 
 Confirmation popup with input
 
