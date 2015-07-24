@@ -60,11 +60,14 @@ Confirmation popup with input
 ```javascript
 $popup.confirm({
             title: 'Confirm',
-            template: '<input type="text" id="enterData" />',
+            template: '<input type="text" ng-model="inputValue" />',
+            scope: $scope,
             okText: 'OK',
             cancelText: 'Cancel',
             okTap: function(e) {
-                return document.getElementById('enterData').value;
+
+                // template scope will be available via 'this'
+                return this.inputValue;
             }
         }).then(function( value ){
             $timeout(function(){
@@ -77,7 +80,3 @@ $popup.confirm({
             }, 200);
         });
 ```
-
-## ToDo ##
-
-Add animation for popup

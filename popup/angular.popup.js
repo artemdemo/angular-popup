@@ -64,9 +64,22 @@
          */
         var popupStatus = 'closed';
 
-        /*
+        /**
+         * If there are timeouts one after another i need to know that next timeout should be cancelled
+         *
+         * @memberof $popup
+         * @private
+         * @type {number}
+         */
+        var animTimeoutID;
+
+        /**
          * This object will contain promise.
          * It should be global because I want to use it also when user click on ESC button and in this case it should be global
+         *
+         * @memberof $popup
+         * @private
+         * @type {promise}
          */
         var deferred = null;
 
@@ -98,12 +111,12 @@
          * &lt;popup&gt;
          * &lt;form&gt;
          * &lt;div class=&quot;popup-container&quot; ng-class=&quot;CUSTOM_CLASS&quot;&gt;
-         * &lt;div class=&quot;popup&quot;&gt;
+         * &lt;div class=&quot;popup zoomIn&quot;&gt;
          * &lt;div class=&quot;popup-head&quot;&gt;
          * &lt;h3 class=&quot;popup-title ng-binding&quot; ng-bind-html=&quot;TITLE&quot;&gt;&lt;/h3&gt;
          * &lt;/div&gt;
          * &lt;div class=&quot;popup-body&quot;&gt;
-         * &lt;span ng-bind-html=&quot;BODY_TXT&quot;&gt;&lt;/span&gt;
+         * BODY_TXT
          * &lt;/div&gt;
          * &lt;div class=&quot;popup-buttons&quot;&gt;&lt;/div&gt;
          * &lt;/div&gt;
@@ -115,12 +128,12 @@
             '<popup>',
             '<form>',
             '<div class="popup-container" ng-class="POPUP_TYPE">',
-            '<div class="popup">',
+            '<div class="popup zoomIn">',
             '<div class="popup-head">',
             '<h3 class="popup-title ng-binding" ng-bind-html="TITLE"></h3>',
             '</div>',
             '<div class="popup-body">',
-            '<span ng-bind-html="BODY_TXT"></span>',
+            'BODY_TXT',
             '</div>',
             '<div class="popup-buttons"></div>',
             '</div>',
@@ -140,18 +153,22 @@
         /**
          * Buttons for confirmation popup
          *
-         * @memberof $popup
+         * @memberof Services.artPopup
+         * @private
+         * @example
+         * &lt;button
+         *      ng-click=&quot;okAction($event)&quot;
+         *      class=&quot;button ng-binding app-bg-color no-border&quot;
+         *      ng-class=&quot;okType || \\'button-default\\'&quot;&gt;{{ OK_TXT }}&lt;/button&gt;
+         * &lt;div
+         *      ng-click=&quot;cancelAction($event)&quot;
+         *      class=&quot;button ng-binding btn-dark-bg no-border&quot;
+         *      ng-class=&quot;cancelType || \\'button-default\\'&quot;&gt;{{ CANCEL_TXT }}&lt;/div&gt;
          * @type {String}
          */
         templates.buttons.confirm = [
-            '<div class="row">',
-            '<div class="col-xs-6">',
-            '<button ng-click="okAction($event)" class="btn btn-ok" ng-class="okType || \'btn-block btn-primary\'">{{ OK_TXT }}</button>',
-            '</div>',
-            '<div class="col-xs-6">',
-            '<div ng-click="cancelAction($event)" class="btn btn-cancel" ng-class="cancelType || \'btn-block btn-default\'">{{ CANCEL_TXT }}</div>',
-            '</div>',
-            '</div>'
+            '<button ng-click="cancelAction($event)" class="btn btn-default cancel_button">{{ CANCEL_TXT }}</button>',
+            '<button ng-click="okAction($event)" class="btn btn-primary">{{ OK_TXT }}</button>'
         ].join('');
 
         /**
@@ -175,27 +192,33 @@
          *  {
             title: 'Alert',
             template: 'Alert body text',
+            scope: {scope},
+            popupClass: 'Additional class for the popup',
             okText: 'OK button text',
             okType: 'OK button additional classes'
          *  }
          *
-         *  @return {Promise}
+         *  @return {promise}
          */
         $popup.show = function( params ) {
-            var element;
-            deferred = $q.defer();
+            var element,
+                scope = params.hasOwnProperty('scope') ? params.scope : undefined,
+                BODY_TXT = params.hasOwnProperty('template') ? params.template : '',
+                deferred = $q.defer();
 
             if ( popupStatus == 'open' ) return false;
             popupStatus = 'open';
 
             params = angular.isObject(params) ? params : {};
 
-            element = compilePopup('show');
+            element = compilePopup('show', BODY_TXT, scope);
 
             popupScope.TITLE = params.hasOwnProperty('title') ? params.title : '';
-            popupScope.BODY_TXT = params.hasOwnProperty('template') ? $sce.trustAsHtml( params.template ) : '';
             popupScope.OK_TXT = params.hasOwnProperty('okText') ? params.okText : 'Ok';
             popupScope.okType = params.hasOwnProperty('okType') ? params.okType : '';
+            popupScope.CUSTOM_CLASS += params.hasOwnProperty('popupClass') ? ' ' + params.popupClass : '';
+
+            document.getElementsByTagName('body')[0].classList.add('popup-open');
 
             for ( var i=0; i < element.length; i++ ) {
                 document.body.appendChild( element[i] );
@@ -206,6 +229,7 @@
 
             popupScope.okAction = function() {
                 deferred.resolve();
+                document.getElementsByTagName('body')[0].classList.remove('popup-open');
                 $popup.hide();
             };
 
@@ -225,17 +249,20 @@
          *  {
             title: 'Alert',
             template: 'Alert body text',
+            scope: {scope},
             cancelText: 'Cancel button text',
             cancelType: 'Cancel button additional classes',
             okText: 'OK button text',
             okType: 'OK button additional classes',
             okTap: function()
          *  }
-         * @return {Promise} - Promise will return result of given onTap function
+         * @return {promise} - Promise will return result of given onTap function
          */
         $popup.confirm = function( params ) {
-            var element;
-            var inputs;
+            var element,
+                inputs,
+                BODY_TXT = params.hasOwnProperty('template') ? params.template : '',
+                scope = params.hasOwnProperty('scope') ? params.scope : undefined;
 
             deferred = $q.defer();
 
@@ -244,14 +271,16 @@
 
             params = angular.isObject(params) ? params : {};
 
-            element = compilePopup('confirm');
+            element = compilePopup('confirm', BODY_TXT, scope);
 
             popupScope.TITLE = params.hasOwnProperty('title') ? params.title : '';
-            popupScope.BODY_TXT = params.hasOwnProperty('template') ? $sce.trustAsHtml( params.template ) : '';
             popupScope.CANCEL_TXT = params.hasOwnProperty('cancelText') ? params.cancelText : 'Cancel';
             popupScope.cancelType = params.hasOwnProperty('cancelType') ? params.cancelType : '';
             popupScope.OK_TXT = params.hasOwnProperty('okText') ? params.okText : 'Ok';
             popupScope.okType = params.hasOwnProperty('okType') ? params.okType : '';
+            popupScope.CUSTOM_CLASS += params.hasOwnProperty('popupClass') ? ' ' + params.popupClass : '';
+
+            document.getElementsByTagName('body')[0].classList.add('popup-open');
 
             for ( var i=0; i < element.length; i++ ) {
                 document.body.appendChild( element[i] );
@@ -259,6 +288,7 @@
 
             popupScope.cancelAction = function() {
                 deferred.reject();
+                document.getElementsByTagName('body')[0].classList.remove('popup-open');
                 $popup.hide();
             };
 
@@ -275,16 +305,17 @@
              *
              * @param {Object} event - mouse event that will be send to the custom function
              *
-             * @return {Promise}
+             * @return {promise}
              */
             popupScope.okAction = function(event) {
                 var result = false;
                 if ( params.hasOwnProperty('okTap') && angular.isFunction( params.okTap ) ) {
-                    result = params.okTap(event);
+                    result = params.okTap.call(popupScope, event);
                 } else {
                     // If there are no 'okTap' function we can close popup
                     result = true;
                 }
+                document.getElementsByTagName('body')[0].classList.remove('popup-open');
                 deferred.resolve( result );
                 if ( !! result ) $popup.hide();
             };
@@ -300,17 +331,27 @@
          *
          * @memberof $popup
          * @function hide
+         * @param immediately {boolean}
          * @public
          */
-        $popup.hide = function() {
+        $popup.hide = function( immediately ) {
+            var $popupContainer = angular.element( popupEl[0].getElementsByClassName('popup')[0] );
             popupScope.$destroy();
             popupStatus = 'closed';
 
-            for ( var i=0; i < popupEl.length; i++ ) {
+            if ( !! immediately ) {
                 popupEl.remove();
+                clearTimeout(animTimeoutID);
+            } else {
+                $popupContainer.removeClass('zoomIn');
+                $popupContainer.addClass('zoomOut');
+                animTimeoutID = setTimeout(function(){
+                    popupEl.remove();
+                }, 200);
             }
 
             angular.element(document.getElementsByTagName('body')[0]).unbind('keyup');
+            angular.element(document.getElementsByTagName('body')[0]).removeClass('popup-open');
         };
 
         /**
@@ -320,13 +361,22 @@
          * @memberof $popup
          * @private
          * @param {String} tmpl - template name
+         * @param {String} BODY_TXT
+         * @param {Object} scope - scope of the popup if not defined I will use rootScope
          * @return {Object} - DOM element of popup
          */
-        var compilePopup = function( tmpl ) {
-            var linkFn, element;
-            var backdrop, buttons;
+        var compilePopup = function( tmpl, BODY_TXT, scope ) {
+            var linkFn,
+                element,
+                popupTmpl,
+                backdrop,
+                buttons;
 
-            popupEl = angular.element( templates.popup );
+            if ( !! popupEl ) $popup.hide( true );
+
+            popupTmpl = templates.popup.replace('BODY_TXT', BODY_TXT);
+
+            popupEl = angular.element( popupTmpl );
             backdrop = angular.element( templates.backdrop );
             buttons = angular.element( templates.buttons[tmpl] );
 
@@ -336,17 +386,16 @@
             }
 
             linkFn = $compile(popupEl);
-            popupScope = $rootScope.$new();
+            popupScope = angular.isDefined(scope) ? scope.$new() : $rootScope.$new();
             element = linkFn(popupScope);
 
-            popupScope.POPUP_TYPE = 'popup-type-' + tmpl;
+            popupScope.CUSTOM_CLASS = 'popup-type-' + tmpl;
 
-            /*
-             * Bind keypress functionality
-             */
+            // Bind keypress functionality
             angular.element(document.getElementsByTagName('body')[0])
-                // if ESC - close popup
                 .bind('keyup', function(e){
+
+                    // if ESC - close popup
                     if (e.keyCode == 27 ) {
                         deferred.reject();
                         $popup.hide();

@@ -73,13 +73,9 @@ module.exports = function(grunt) {
         }
     });
 
-    //Loading less plugin
     grunt.loadNpmTasks('grunt-contrib-less');
-    //Loading watcher
     grunt.loadNpmTasks('grunt-contrib-watch');
-    //Loading uglify plugin
     grunt.loadNpmTasks('grunt-contrib-uglify');
-    //Loading jshint plugin
     grunt.loadNpmTasks('grunt-contrib-jshint');
 
     grunt.loadNpmTasks('grunt-jsdoc');
