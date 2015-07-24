@@ -99,7 +99,7 @@
          * @type {string}
          */
         templates.backdrop = [
-            '<div class="popup-backdrop"></div>'
+            '<div class="popup-backdrop fadeIn"></div>'
         ].join('');
 
         /**
@@ -335,7 +335,9 @@
          * @public
          */
         $popup.hide = function( immediately ) {
-            var $popupContainer = angular.element( popupEl[0].getElementsByClassName('popup')[0] );
+            var $popupContainer = angular.element( popupEl[0].getElementsByClassName('popup')[0]),
+                $popupBackdrop = angular.element( popupEl[0].getElementsByClassName('popup-backdrop')[0] );
+
             popupScope.$destroy();
             popupStatus = 'closed';
 
@@ -345,6 +347,8 @@
             } else {
                 $popupContainer.removeClass('zoomIn');
                 $popupContainer.addClass('zoomOut');
+                $popupBackdrop.removeClass('fadeIn');
+                $popupBackdrop.addClass('fadeOut');
                 animTimeoutID = setTimeout(function(){
                     popupEl.remove();
                 }, 200);

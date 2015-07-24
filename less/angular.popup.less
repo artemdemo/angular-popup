@@ -7,6 +7,12 @@
 
 @animation-duration: 200ms;
 
+.animated {
+  -webkit-animation-duration: @animation-duration;
+  animation-duration: @animation-duration;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
 
 .position-absolute {
   top: 0;
@@ -23,6 +29,7 @@ popup {
 
 .popup-backdrop {
   .position-absolute;
+  .animated;
   z-index: @basic-z-index;
   background-color: rgba(0, 0, 0, 0.5);
 }
@@ -31,6 +38,7 @@ popup {
   z-index: @basic-z-index + 1;
 
   .popup {
+    .animated;
     top: 40%;
     left: 50%;
     color: black;
@@ -42,11 +50,6 @@ popup {
     background-color: @popup-bg-color;
     margin-left: -1 * @popup-width / 2;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-
-    -webkit-animation-duration: @animation-duration;
-    animation-duration: @animation-duration;
-    -webkit-animation-fill-mode: both;
-    animation-fill-mode: both;
   }
   .popup-body {
     margin-bottom: 10px;
@@ -58,7 +61,11 @@ popup {
   }
 }
 
+//
 // Animation
+//
+
+//------> zoomIn
 
 @-webkit-keyframes zoomIn {
   0% {
@@ -88,6 +95,8 @@ popup {
   -webkit-animation-name: zoomIn;
   animation-name: zoomIn;
 }
+
+//------> zoomOut
 
 @-webkit-keyframes zoomOut {
   0% {
@@ -124,4 +133,58 @@ popup {
 .zoomOut {
   -webkit-animation-name: zoomOut;
   animation-name: zoomOut;
+}
+
+//------> fadeIn
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
+}
+
+//------> fadeOut
+
+@-webkit-keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.fadeOut {
+  -webkit-animation-name: fadeOut;
+  animation-name: fadeOut;
 }
