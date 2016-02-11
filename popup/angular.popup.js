@@ -213,7 +213,7 @@
 
             element = compilePopup('show', BODY_TXT, scope);
 
-            popupScope.TITLE = params.hasOwnProperty('title') ? params.title : '';
+            popupScope.TITLE = $sce.trustAsHtml(params.hasOwnProperty('title') ? params.title : '');
             popupScope.OK_TXT = params.hasOwnProperty('okText') ? params.okText : 'Ok';
             popupScope.okType = params.hasOwnProperty('okType') ? params.okType : '';
             popupScope.CUSTOM_CLASS += params.hasOwnProperty('popupClass') ? ' ' + params.popupClass : '';
@@ -273,7 +273,7 @@
 
             element = compilePopup('confirm', BODY_TXT, scope);
 
-            popupScope.TITLE = params.hasOwnProperty('title') ? params.title : '';
+            popupScope.TITLE = $sce.trustAsHtml(params.hasOwnProperty('title') ? params.title : '');
             popupScope.CANCEL_TXT = params.hasOwnProperty('cancelText') ? params.cancelText : 'Cancel';
             popupScope.cancelType = params.hasOwnProperty('cancelType') ? params.cancelType : '';
             popupScope.OK_TXT = params.hasOwnProperty('okText') ? params.okText : 'Ok';
